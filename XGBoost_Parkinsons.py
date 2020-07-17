@@ -9,7 +9,7 @@ from xgboost import XGBClassifier
 import os, sys
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
 """
 ---------------Data Pre-processing---------------
@@ -51,4 +51,29 @@ classifier.fit(X_train, y_train)
 single_prediction = classifier.predict(np.array([X_test[0, :]]))
 print("Single Prediction")
 print(f"Single prediction is {single_prediction}")
-print(f"Actual answer is {y_test[0]}")
+print(f"Actual answer is {y_test[0]}", end="\n\n")
+
+"""
+---------------Predicting Test Set Result---------------
+"""
+y_pred = classifier.predict(X_test)
+# Convert vectors from horizontal to vertical and display side by side to compare
+print("Prediction, Actual")
+print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.reshape(len(y_test), 1)), axis=1))
+
+"""
+--------------Making the Confusion Matrix and Evaluating the Model---------------
+"""
+
+# Gives confusion matrix C such that Cij is equal to the number of observations known to be in group i and predicted to be in group j.
+cm = confusion_matrix(y_test, y_pred)
+true_positive = cm[1][1]
+true_negative = cm[0][0]
+false_positive = cm[0][1]
+false_negative = cm[1][0]
+
+print("\nModel Evaluation")
+print(f"Accuracy is {accuracy_score(y_test, y_pred)}")
+print(f"Precision is {true_positive / (true_positive + false_positive)}")
+print(f"Recall is {true_positive / (true_positive + false_negative)}")
+print(f"F1 score is {f1_score(y_test, y_pred, average='binary')}")
