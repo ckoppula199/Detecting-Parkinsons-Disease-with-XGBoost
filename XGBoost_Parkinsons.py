@@ -37,3 +37,18 @@ scaler = MinMaxScaler((-1, 1)) # Scales features between -1 and 1
 # X_test uses same scaler values calculated from the training set.
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
+
+"""
+---------------Training the Model---------------
+"""
+# Training the XGBoost classifier on the training data
+classifier = XGBClassifier()
+classifier.fit(X_train, y_train)
+
+"""
+---------------Predicting Single Result---------------
+"""
+single_prediction = classifier.predict(np.array([X_test[0, :]]))
+print("Single Prediction")
+print(f"Single prediction is {single_prediction}")
+print(f"Actual answer is {y_test[0]}")
